@@ -1,0 +1,4 @@
+*.step
+*.sch-bak
+*.kicad_pcb-bak
+*.xml
