@@ -1,0 +1,113 @@
+EESchema Schematic File Version 5
+LIBS:lora-bridge-cache
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 5
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+Comment5 ""
+Comment6 ""
+Comment7 ""
+Comment8 ""
+Comment9 ""
+$EndDescr
+Text HLabel 3275 1575 0    50   Input ~ 0
+VIN
+Text HLabel 4625 2175 3    50   Input ~ 0
+GND
+Text HLabel 5450 1575 2    50   Input ~ 0
+VOUT
+$Comp
+L Device:C C7
+U 1 1 5BD77A45
+P 3675 1725
+F 0 "C7" H 3560 1771 50  0000 R CNN
+F 1 "4.7u" H 3560 1680 50  0000 R CNN
+F 2 "zive:C_0603_1608Metric" H 3713 1575 50  0001 C CNN
+F 3 "~" H 3675 1725 50  0001 C CNN
+F 4 "CL10A475KP8NNNC" H 3675 1725 50  0001 C CNN "PartNo"
+F 5 "SAMSUNG" H 3675 1725 50  0001 C CNN "Manufacturer"
+	1    3675 1725
+	1    0    0    -1  
+$EndComp
+$Comp
+L miceuz:MCP1810T-33I_OT U4
+U 1 1 5C710FF3
+P 4625 1725
+F 0 "U4" H 4600 2100 50  0000 C CNN
+F 1 "MCP1810T-33I_OT" H 4600 2009 50  0000 C CNN
+F 2 "zive:SOT-23-5" H 4625 1525 50  0001 C CNN
+F 3 "" H 4625 1525 50  0001 C CNN
+F 4 "MICROCHIP" H 4625 1725 50  0001 C CNN "Manufacturer"
+F 5 "MCP1810T-33I/OT" H 4625 1725 50  0001 C CNN "PartNo"
+	1    4625 1725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3925 1875 3925 1575
+Connection ~ 3925 1575
+Wire Wire Line
+	3675 1575 3925 1575
+Wire Wire Line
+	3675 1875 3675 2175
+Wire Wire Line
+	3675 2175 4625 2175
+$Comp
+L Device:C C16
+U 1 1 5D00435E
+P 3275 1725
+F 0 "C16" H 3160 1771 50  0000 R CNN
+F 1 "4.7u" H 3160 1680 50  0000 R CNN
+F 2 "zive:C_0603_1608Metric" H 3313 1575 50  0001 C CNN
+F 3 "~" H 3275 1725 50  0001 C CNN
+F 4 "CL10A475KP8NNNC" H 3275 1725 50  0001 C CNN "PartNo"
+F 5 "SAMSUNG" H 3275 1725 50  0001 C CNN "Manufacturer"
+	1    3275 1725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3275 2175 3675 2175
+Connection ~ 3675 2175
+Wire Wire Line
+	3275 1575 3675 1575
+Connection ~ 3675 1575
+Wire Wire Line
+	3275 1875 3275 2175
+Wire Wire Line
+	5450 2175 4625 2175
+Connection ~ 4625 2175
+Wire Wire Line
+	5275 1575 5450 1575
+$Comp
+L Device:C C?
+U 1 1 5D86D7BC
+P 5450 2025
+F 0 "C?" H 5335 2071 50  0000 R CNN
+F 1 "4.7u" H 5335 1980 50  0000 R CNN
+F 2 "zive:C_0603_1608Metric" H 5488 1875 50  0001 C CNN
+F 3 "~" H 5450 2025 50  0001 C CNN
+F 4 "CL10A475KP8NNNC" H 5450 2025 50  0001 C CNN "PartNo"
+F 5 "SAMSUNG" H 5450 2025 50  0001 C CNN "Manufacturer"
+	1    5450 2025
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5D86E8A3
+P 5450 1725
+F 0 "R?" H 5520 1771 50  0000 L CNN
+F 1 "0" H 5520 1680 50  0000 L CNN
+F 2 "" V 5380 1725 50  0001 C CNN
+F 3 "~" H 5450 1725 50  0001 C CNN
+	1    5450 1725
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
