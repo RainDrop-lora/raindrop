@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 5
+Sheet 3 5
 Title ""
 Date ""
 Rev ""
@@ -22,9 +22,9 @@ Text HLabel 4150 2200 0    50   Input ~ 0
 VIN
 Text HLabel 5625 2200 2    50   Input ~ 0
 VOUT
-Text HLabel 5625 2750 2    50   Input ~ 0
+Text HLabel 6025 2750 2    50   Input ~ 0
 SCL
-Text HLabel 5625 2875 2    50   Input ~ 0
+Text HLabel 6025 2875 2    50   Input ~ 0
 SDA
 Text HLabel 4400 2825 0    50   Input ~ 0
 ~ENABLE
@@ -58,11 +58,11 @@ Wire Wire Line
 Wire Wire Line
 	5400 2500 5400 2750
 Wire Wire Line
-	5400 2750 5625 2750
+	5400 2750 5825 2750
 Wire Wire Line
 	5125 2500 5125 2875
 Wire Wire Line
-	5125 2875 5625 2875
+	5125 2875 6025 2875
 Wire Wire Line
 	4900 2200 5125 2200
 Connection ~ 5125 2200
@@ -112,4 +112,38 @@ F 7 "Exact as specified" H 4700 2300 50  0001 C CNN "Comment"
 	1    4700 2300
 	0    1    -1   0   
 $EndComp
+$Comp
+L Device:D_TVS_x2_AAC D9
+U 1 1 5CF95011
+P 5475 3275
+F 0 "D9" H 5475 3400 50  0000 C CNN
+F 1 "D_TVS_x2_AAC" H 5475 3400 50  0001 C CNN
+F 2 "miceuz-lib:SC89" H 5325 3275 50  0001 C CNN
+F 3 "~" H 5325 3275 50  0001 C CNN
+F 4 "ON SEMICONDUCTOR" H 3425 1575 50  0001 C CNN "Manufacturer"
+F 5 " NZL5V6AXV3T1G" H 3425 1575 50  0001 C CNN "PartNo"
+	1    5475 3275
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	5125 2875 5125 3275
+Connection ~ 5125 2875
+Wire Wire Line
+	5825 2750 5825 3275
+Connection ~ 5825 2750
+Wire Wire Line
+	5825 2750 6025 2750
+$Comp
+L power:GND #PWR0137
+U 1 1 5DAF890B
+P 5475 3425
+F 0 "#PWR0137" H 5475 3175 50  0001 C CNN
+F 1 "GND" H 5480 3252 50  0000 C CNN
+F 2 "" H 5475 3425 50  0001 C CNN
+F 3 "" H 5475 3425 50  0001 C CNN
+	1    5475 3425
+	1    0    0    -1  
+$EndComp
+Text HLabel 5475 3425 0    50   Input ~ 0
+GND
 $EndSCHEMATC
