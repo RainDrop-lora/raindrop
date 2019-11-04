@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 5
+Sheet 5 5
 Title ""
 Date ""
 Rev ""
@@ -22,8 +22,6 @@ Text HLabel 4675 2200 2    50   Input ~ 0
 A
 Text HLabel 4675 2400 2    50   Input ~ 0
 B
-Text HLabel 4025 1100 0    50   Input ~ 0
-VIN
 Text HLabel 3175 2900 0    50   Input ~ 0
 GND
 Text HLabel 3375 2100 0    50   Input ~ 0
@@ -62,14 +60,11 @@ RS485A
 Text Label 4675 2400 2    60   ~ 0
 RS485B
 Wire Wire Line
-	3775 1900 3775 1250
-Wire Wire Line
-	2975 1250 3775 1250
+	3775 1900 3775 1700
 Wire Wire Line
 	4175 2200 4675 2200
 Wire Wire Line
 	4175 2400 4675 2400
-Connection ~ 3775 1250
 $Comp
 L Device:R R9
 U 1 1 58FEF0D0
@@ -97,8 +92,6 @@ F 4 "Generic 5% resistor" H 2975 1850 50  0001 C CNN "Comment"
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2975 1250 2975 1700
-Wire Wire Line
 	2975 2000 2975 2500
 Wire Wire Line
 	3175 2900 3775 2900
@@ -124,7 +117,97 @@ F 6 "2542747" H 3775 2300 60  0001 C CNN "Distributor"
 	1    3775 2300
 	1    0    0    -1  
 $EndComp
+Text HLabel 3775 1250 0    50   Input ~ 0
+VIN
+Text HLabel 1550 2075 0    50   Input ~ 0
+ENABLE
+$Comp
+L Device:R R8
+U 1 1 5D8C5F68
+P 1850 1400
+F 0 "R8" H 1781 1354 50  0000 R CNN
+F 1 "1M" H 1781 1445 50  0000 R CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1780 1400 50  0001 C CNN
+F 3 "~" H 1850 1400 50  0001 C CNN
+	1    1850 1400
+	1    0    0    1   
+$EndComp
 Wire Wire Line
-	4025 1100 4025 1250
-Connection ~ 4025 1250
+	1850 1250 1950 1250
+Wire Wire Line
+	2150 1875 2150 1550
+Wire Wire Line
+	1600 1250 1850 1250
+Connection ~ 1850 1250
+$Comp
+L Device:Q_PMOS_GSD Q1
+U 1 1 5D8C5F67
+P 2150 1350
+F 0 "Q1" V 2350 1350 50  0000 C CNN
+F 1 "Q_PMOS_GSD" V 2387 1350 50  0001 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 2350 1450 29  0001 C CNN
+F 3 "" H 2150 1350 60  0000 C CNN
+F 4 "NX2301P,215 " H 2150 1350 60  0001 C CNN "PartNo"
+F 5 "NXP" H 2150 1350 60  0001 C CNN "Manufacturer"
+F 6 "1894738" H 2150 1350 60  0001 C CNN "Distributor"
+F 7 "Exact as specified" H 2150 1350 50  0001 C CNN "Comment"
+	1    2150 1350
+	0    1    -1   0   
+$EndComp
+Text HLabel 2350 1250 2    50   Input ~ 0
+VOUT
+Text HLabel 1600 1250 0    50   Input ~ 0
+BATT
+Wire Wire Line
+	2975 1700 3775 1700
+Connection ~ 3775 1700
+Wire Wire Line
+	3775 1700 3775 1250
+$Comp
+L Device:R R10
+U 1 1 5DC0D0CD
+P 1700 2075
+F 0 "R10" V 1493 2075 50  0000 C CNN
+F 1 "150" V 1584 2075 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1630 2075 50  0001 C CNN
+F 3 "~" H 1700 2075 50  0001 C CNN
+	1    1700 2075
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:Q_NMOS_GSD Q2
+U 1 1 5C9CE926
+P 2050 2075
+F 0 "Q2" H 2256 2075 50  0000 L CNN
+F 1 "Q_NMOS_GSD" H 2256 2030 50  0001 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 2250 2175 50  0001 C CNN
+F 3 "~" H 2050 2075 50  0001 C CNN
+F 4 "NTR4003NT1G" H 2050 2075 50  0001 C CNN "PartNo"
+F 5 "ON SEMICONDUCTOR" H 2050 2075 50  0001 C CNN "Manufacturer"
+	1    2050 2075
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1850 1550 2150 1550
+Connection ~ 2150 1550
+$Comp
+L Device:R R16
+U 1 1 5D8F7219
+P 1550 2225
+F 0 "R16" H 1481 2179 50  0000 R CNN
+F 1 "1M" H 1481 2270 50  0000 R CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1480 2225 50  0001 C CNN
+F 3 "~" H 1550 2225 50  0001 C CNN
+	1    1550 2225
+	1    0    0    -1  
+$EndComp
+Text HLabel 2150 2525 0    50   Input ~ 0
+GND
+Wire Wire Line
+	2150 2275 2150 2375
+Connection ~ 2150 2375
+Wire Wire Line
+	2150 2375 2150 2525
+Wire Wire Line
+	1550 2375 2150 2375
 $EndSCHEMATC
