@@ -4,11 +4,11 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 5
-Title ""
-Date ""
-Rev ""
-Comp ""
-Comment1 ""
+Title "Lora - RS485 bridge"
+Date "2019-11-05"
+Rev "1.1"
+Comp "Albertas Mickenas"
+Comment1 "albertas@technarium.lt"
 Comment2 ""
 Comment3 ""
 Comment4 ""
@@ -291,15 +291,13 @@ U 1 1 5D83A63A
 P 10625 1700
 F 0 "J2" H 10597 1582 50  0000 R CNN
 F 1 "ANT" H 10597 1673 50  0000 R CNN
-F 2 "Connector_Coaxial:SMA_Amphenol_901-144_Vertical" H 10625 1700 50  0001 C CNN
+F 2 "Connector_Coaxial:SMA_Amphenol_132289_EdgeMount" H 10625 1700 50  0001 C CNN
 F 3 "~" H 10625 1700 50  0001 C CNN
 F 4 "5-1814832-1" H 10625 1700 50  0001 C CNN "PartNo"
 F 5 "TE Connectivity AMP Connectors" H 10625 1700 50  0001 C CNN "Manufacturer"
 	1    10625 1700
 	-1   0    0    -1  
 $EndComp
-Wire Wire Line
-	10100 1700 10325 1700
 $Comp
 L power:GND #PWR0116
 U 1 1 5D83ADEE
@@ -1052,37 +1050,6 @@ Wire Wire Line
 	6875 3025 7425 3025
 Connection ~ 7425 3025
 $Comp
-L power:GND #PWR0136
-U 1 1 5D8D97A9
-P 10500 1350
-F 0 "#PWR0136" H 10500 1100 50  0001 C CNN
-F 1 "GND" H 10505 1177 50  0000 C CNN
-F 2 "" H 10500 1350 50  0001 C CNN
-F 3 "" H 10500 1350 50  0001 C CNN
-	1    10500 1350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x02_Male J6
-U 1 1 5D8D9796
-P 10700 1250
-F 0 "J6" H 10672 1132 50  0000 R CNN
-F 1 "ANT" H 10672 1223 50  0000 R CNN
-F 2 "miceuz-lib:U.FL_TEConnectivity_2334884_1" H 10700 1250 50  0001 C CNN
-F 3 "~" H 10700 1250 50  0001 C CNN
-F 4 "2334884-1" H 10700 1250 50  0001 C CNN "PartNo"
-F 5 "TE Connectivity AMP Connectors" H 10700 1250 50  0001 C CNN "Manufacturer"
-	1    10700 1250
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	10500 1250 10325 1250
-Wire Wire Line
-	10325 1250 10325 1700
-Connection ~ 10325 1700
-Wire Wire Line
-	10325 1700 10425 1700
-$Comp
 L power:GND #PWR01
 U 1 1 5DAFB4A2
 P 8550 6300
@@ -1285,4 +1252,6 @@ Wire Wire Line
 	10100 2400 10325 2400
 Wire Wire Line
 	10325 2400 10325 2500
+Wire Wire Line
+	10100 1700 10425 1700
 $EndSCHEMATC
