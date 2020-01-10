@@ -49,22 +49,28 @@ void postTransmission() {
   digitalWrite(RE, LOW);
 }
 
-// This EUI must be in little-endian format, so least-significant-byte
-// first. When copying an EUI from ttnctl output, this means to reverse
-// the bytes. For TTN issued EUIs the last bytes should be 0xD5, 0xB3,
-// 0x70.
-static const u1_t PROGMEM APPEUI[8] = { 0x67, 0x29, 0x02, 0xD0, 0x7E, 0xD5, 0xB3, 0x70 };
-void os_getArtEui (u1_t* buf) { memcpy_P(buf, APPEUI, 8);}
+// These callbacks are only used in over-the-air activation, so they are
+// left empty here (we cannot leave them out completely unless
+// DISABLE_JOIN is set in arduino-lmic/project_config/lmic_project_config.h,
+// otherwise the linker will complain).
+void os_getArtEui (u1_t* buf) { }
+void os_getDevEui (u1_t* buf) { }
+void os_getDevKey (u1_t* buf) { }
 
-// This should also be in little endian format, see above.
-static const u1_t PROGMEM DEVEUI[8] = { 0x92, 0x6A, 0xA0, 0xC2, 0xAF, 0x2D, 0x7D, 0x00 };
-void os_getDevEui (u1_t* buf) { memcpy_P(buf, DEVEUI, 8);}
+// LoRaWAN AppSKey, application session key
+// This should also be in big-endian (aka msb).
+static const u1_t PROGMEM APPSKEY[16] = { 0x33, 0x45, 0x61, 0x45, 0xCA, 0x50, 0xEE, 0x43, 0xD4, 0xCC, 0x01, 0x8D, 0xA1, 0xA3, 0xFA, 0x91 };
 
-// This key should be in big endian format (or, since it is not really a
-// number but a block of memory, endianness does not really apply). In
-// practice, a key taken from the TTN console can be copied as-is.
-static const u1_t PROGMEM APPKEY[16] = { 0x22, 0xB0, 0x7C, 0x46, 0x58, 0xD3, 0x55, 0xD9, 0x4C, 0x57, 0x5C, 0xB0, 0x29, 0x26, 0x87, 0x4E };
-void os_getDevKey (u1_t* buf) {  memcpy_P(buf, APPKEY, 16);}
+// LoRaWAN end-device address (DevAddr)
+// See http://thethingsnetwork.org/wiki/AddressSpace
+// The library converts the address to network byte order as needed, so this should be in big-endian (aka msb) too.
+static const u4_t DEVADDR = 0x26011ED3; // <-- Change this address for every node!
+
+// LoRaWAN NwkSKey, network session key
+// This should be in big-endian (aka msb).
+static const u1_t NWKSKEY[16] = { 0xEB, 0xFA, 0x25, 0x22, 0xE0, 0xAA, 0x6C, 0x00, 0xD4, 0x1B, 0xC9, 0x31, 0x4F, 0x4F, 0xE8, 0xF6 };
+
+
 
 // payload to send to TTN gateway
 static uint8_t payload[5];
@@ -72,7 +78,7 @@ static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 5;
+const unsigned TX_INTERVAL = 3;
 
 
 
@@ -83,9 +89,52 @@ const lmic_pinmap lmic_pins = {
   .dio = {3, 9, LMIC_UNUSED_PIN},    // Connect "i01" to "5"
                     // Connect "D2" to "6"
   .rxtx_rx_active = 0,
-  .rssi_cal = 8,              // LBT cal for the Adafruit Feather M0 LoRa, in dB
+  .rssi_cal = 0,              // LBT cal for the Adafruit Feather M0 LoRa, in dB
   .spi_freq = 8000000,
 };
+
+
+void goToSleep() {
+
+//    LMIC_shutdown();
+//    SPI.end();
+//
+//    pinMode(22, INPUT_DISCONNECTED);
+//    pinMode(23, INPUT_PULLUP);
+//    pinMode(24, INPUT_PULLUP);
+//    
+//    pinMode(4, INPUT_DISCONNECTED);
+//    pinMode(8, INPUT_PULLUP);
+//    pinMode(3, INPUT_DISCONNECTED);
+//    pinMode(9, INPUT_DISCONNECTED);
+//
+//    pinMode(LED_WAN, INPUT_DISCONNECTED);
+//    pinMode(LED_SENSOR, INPUT_DISCONNECTED);
+//    pinMode(LED_BATT, INPUT_DISCONNECTED);
+//    pinMode(RS_485_EN, INPUT_DISCONNECTED);
+//
+
+    digitalWrite(RE, HIGH);
+    digitalWrite(DE, LOW);
+
+//    pinMode(RE, INPUT_DISCONNECTED);
+//    pinMode(DE, INPUT_DISCONNECTED);
+        
+
+    rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
+    SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+    rtc.standbyMode();
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+
+//---------- WAKEUP!!! ----------------
+
+   
+//    pinMode(LED_WAN, OUTPUT);
+//    pinMode(LED_SENSOR, OUTPUT);
+//    pinMode(LED_BATT, OUTPUT);
+//    
+//    pinMode(RS_485_EN, OUTPUT);
+}
 
 void onEvent (ev_t ev) {
     Serial.print(os_getTime());
@@ -164,10 +213,13 @@ void onEvent (ev_t ev) {
               Serial.println(F(" bytes of payload"));
             }
           
-            rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
-            rtc.standbyMode();
-                  
-            //os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
+            goToSleep();
+            LMIC.bands[BAND_MILLI].avail = os_getTime();
+            LMIC.bands[BAND_CENTI].avail = os_getTime();
+            LMIC.bands[BAND_DECI].avail = os_getTime();  
+                             
+//            os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
+            digitalWrite(LED_WAN, HIGH);
             do_send(&sendjob);
             break;
         case EV_LOST_TSYNC:
@@ -203,57 +255,53 @@ void onEvent (ev_t ev) {
     }
 }
 
+
+uint16_t batteryMillivolts = 0;
+int16_t temperature;
+uint16_t moisture;
+
+void readSensors() {
+    digitalWrite(LED_SENSOR, HIGH);
+    digitalWrite(RS_485_EN, HIGH);
+    delay(100);
+
+    sensor.begin(1, Serial5);
+    sensor.preTransmission(preTransmission);
+    sensor.postTransmission(postTransmission);
+    
+    uint8_t result = sensor.readInputRegisters(0, 2);
+    Serial.print("modbus result: "); Serial.println(result, HEX);
+    
+    moisture = sensor.getResponseBuffer(0);
+    temperature = sensor.getResponseBuffer(1);
+    batteryMillivolts = analogRead(A0) * 2 * 3300 / 1024;
+
+    Serial.print("Battery voltage: ");
+    Serial.println(batteryMillivolts);
+    Serial.print("Temperature: "); Serial.print(temperature);
+    Serial.println(" *C");
+    Serial.print("Moisture ");
+    Serial.println(moisture);
+
+    digitalWrite(RS_485_EN, LOW);
+    digitalWrite(LED_SENSOR, LOW);
+}
+
 void do_send(osjob_t* j){
     // Check if there is not a current TX/RX job running
     if (LMIC.opmode & OP_TXRXPEND) {
         Serial.println(F("OP_TXRXPEND, not sending"));
     } else {
-        uint8_t result = sensor.readInputRegisters(0, 2);
-        float moisture = sensor.getResponseBuffer(0);
-        float temperature = (float)(sensor.getResponseBuffer(1))/10;
+        readSensors();
+        payload[0] = batteryMillivolts & 0x00FF;
+        payload[1] = (batteryMillivolts >> 8) & 0x00FF;
+        payload[2] = moisture & 0x00FF;
+        payload[3] = (moisture >> 8) & 0x00FF;
+        payload[4] = temperature & 0x00FF;
+        payload[5] = (temperature >> 8) & 0x00FF;
 
-        delay(100);
-        result = sensor.writeSingleRegister(4, 30);
-        Serial.print("sleep command result:");
-        Serial.println(result);
-        digitalWrite(RE, HIGH);
-        digitalWrite(DE, LOW);
-
-        Serial.print("Temperature: "); Serial.print(temperature);
-        Serial.println(" *C");
-        
-        // adjust for the f2sflt16 range (-1 to 1)
-        temperature = temperature / 100; 
-
-        // read the humidity from the DHT22
-        Serial.print("Moisture ");
-        Serial.println(moisture);
-        // adjust for the f2sflt16 range (-1 to 1)
-        moisture = moisture / 1024;
-        
-        // float -> int
-        // note: this uses the sflt16 datum (https://github.com/mcci-catena/arduino-lmic#sflt16)
-        uint16_t payloadTemp = LMIC_f2sflt16(temperature);
-        // int -> bytes
-        byte tempLow = lowByte(payloadTemp);
-        byte tempHigh = highByte(payloadTemp);
-        // place the bytes into the payload
-        payload[0] = tempLow;
-        payload[1] = tempHigh;
-
-        // float -> int
-        uint16_t payloadMoist = LMIC_f2sflt16(moisture);
-        // int -> bytes
-        byte moistLow = lowByte(payloadMoist);
-        byte moistHigh = highByte(payloadMoist);
-        payload[2] = moistLow;
-        payload[3] = moistHigh;
-
-        // prepare upstream data transmission at the next possible time.
-        // transmit on port 1 (the first parameter); you can use any value from 1 to 223 (others are reserved).
-        // don't request an ack (the last parameter, if not zero, requests an ack from the network).
-        // Remember, acks consume a lot of network resources; don't ask for an ack unless you really need it.
-        LMIC_setTxData2(1, payload, 0, 0);
+        //(port, payload, payload size, ack)
+        LMIC_setTxData2(1, payload, 6, 0);
     }
     // Next TX is scheduled after TX_COMPLETE event.
 }
@@ -281,25 +329,34 @@ void setup() {
     digitalWrite(LED_BATT, LOW);
     delay(1000);
         
-    Serial1.begin(19200);
+    Serial5.begin(19200);
     Serial.begin(115200);
+
     rtc.begin();
     rtc.setEpoch(0);
     rtc.enableAlarm(rtc.MATCH_YYMMDDHHMMSS);
     rtc.attachInterrupt(alarmMatch);
     
-    sensor.begin(1, Serial1);
-    sensor.preTransmission(preTransmission);
-    sensor.postTransmission(postTransmission);
+//    sensor.begin(1, Serial5);
+//    sensor.preTransmission(preTransmission);
+//    sensor.postTransmission(postTransmission);
 
     Serial.println(F("Starting"));
 
     // LMIC init.
     os_init();
-    digitalWrite(LED_WAN, HIGH);
+    digitalWrite(LED_SENSOR, HIGH);
+
     // Reset the MAC state. Session and pending data transfers will be discarded.
     LMIC_reset(); 
+
 //    LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
+
+    uint8_t appskey[sizeof(APPSKEY)];
+    uint8_t nwkskey[sizeof(NWKSKEY)];
+    memcpy_P(appskey, APPSKEY, sizeof(APPSKEY));
+    memcpy_P(nwkskey, NWKSKEY, sizeof(NWKSKEY));
+    LMIC_setSession (0x13, DEVADDR, nwkskey, appskey);
 
     // Set up the channels used by the Things Network, which corresponds
     // to the defaults of most gateways. Without this, only three base
@@ -309,22 +366,24 @@ void setup() {
     // your network here (unless your network autoconfigures them).
     // Setting up channels should happen after LMIC_setSession, as that
     // configures the minimal channel set.
-//    LMIC_setupChannel(0, 868100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(1, 868300000, DR_RANGE_MAP(DR_SF12, DR_SF7B), BAND_CENTI);      // g-band
-//    LMIC_setupChannel(2, 868500000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(3, 867100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(4, 867300000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(5, 867500000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(6, 867700000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(7, 867900000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
-//    LMIC_setupChannel(8, 868800000, DR_RANGE_MAP(DR_FSK,  DR_FSK),  BAND_MILLI);      // g2-band
+
+    LMIC_setupChannel(0, 868100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(1, 868300000, DR_RANGE_MAP(DR_SF12, DR_SF7B), BAND_CENTI);      // g-band
+    LMIC_setupChannel(2, 868500000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(3, 867100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(4, 867300000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(5, 867500000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(6, 867700000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(7, 867900000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+    LMIC_setupChannel(8, 868800000, DR_RANGE_MAP(DR_FSK,  DR_FSK),  BAND_MILLI);      // g2-band
 
     // Disable link-check mode and ADR, because ADR tends to complicate testing.
     LMIC_setLinkCheckMode(0);
+    // TTN uses SF9 for its RX2 window.
+    LMIC.dn2Dr = DR_SF9;
     
-    // Set the data rate to Spreading Factor 7.  This is the fastest supported rate for 125 kHz channels, and it
-    // minimizes air time and battery power. Set the transmission power to 14 dBi (25 mW).
-    LMIC_setDrTxpow(EU868_DR_SF9, 14);
+    // Set data rate and transmit power for uplink
+    LMIC_setDrTxpow(DR_SF9, 27);
 
     // Start job (sending automatically starts OTAA too)
     do_send(&sendjob);
