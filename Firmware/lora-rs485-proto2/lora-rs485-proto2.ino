@@ -211,13 +211,16 @@ void do_send(osjob_t* j){
         Serial.println(F("OP_TXRXPEND, not sending"));
     } else {
         uint8_t result = sensor.readInputRegisters(0, 2);
+        Serial.print("req result:");
+        Serial.println(result, HEX);
+
         float moisture = sensor.getResponseBuffer(0);
         float temperature = (float)(sensor.getResponseBuffer(1))/10;
 
         delay(100);
         result = sensor.writeSingleRegister(4, 30);
         Serial.print("sleep command result:");
-        Serial.println(result);
+        Serial.println(result, HEX);
         digitalWrite(RE, HIGH);
         digitalWrite(DE, LOW);
 

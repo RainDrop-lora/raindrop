@@ -129,7 +129,9 @@ void goToSleep() {
     digitalWrite(LED_SENSOR, LOW);
 
     rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
+    SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
     rtc.standbyMode();
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 
 //---------- WAKEUP!!! ----------------
 
@@ -311,6 +313,7 @@ void setup() {
         
     Serial1.begin(19200);
     Serial.begin(9600);
+
     rtc.begin();
     rtc.setEpoch(0);
     rtc.enableAlarm(rtc.MATCH_YYMMDDHHMMSS);
