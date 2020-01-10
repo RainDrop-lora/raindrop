@@ -18,7 +18,7 @@ Comment7 ""
 Comment8 ""
 Comment9 ""
 $EndDescr
-Text HLabel 1775 1800 0    50   Input ~ 0
+Text HLabel 1475 1800 0    50   Input ~ 0
 VIN
 Text HLabel 3725 1800 2    50   Input ~ 0
 VOUT
@@ -135,4 +135,17 @@ Connection ~ 2700 2100
 Connection ~ 2700 2850
 Wire Wire Line
 	2700 2850 3200 2850
+$Comp
+L Device:Thermistor_PTC TH1
+U 1 1 5DC19068
+P 1625 1800
+F 0 "TH1" V 1769 1800 50  0000 C CNN
+F 1 "Thermistor_PTC" V 1769 1800 50  0001 C CNN
+F 2 "Fuse:Fuse_1206_3216Metric" H 1675 1600 50  0001 L CNN
+F 3 "~" H 1625 1800 50  0001 C CNN
+F 4 "nSMD075-13.2V" H 1625 1800 50  0001 C CNN "PartNo"
+F 5 "TECHFUSE" H 1625 1800 50  0001 C CNN "Manufacturer"
+	1    1625 1800
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC
