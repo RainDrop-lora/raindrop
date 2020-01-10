@@ -25,8 +25,14 @@
 ModbusMaster sensor;
 
 
-#define DE 12
-#define RE 11
+#define DE 0
+#define RE 1
+
+#define LED_WAN 18
+#define LED_SENSOR 17
+#define LED_BATT 16
+#define RS_485_EN 2
+
 
 RTCZero rtc;
 
@@ -51,34 +57,77 @@ static const u1_t PROGMEM APPEUI[8] = { 0x67, 0x29, 0x02, 0xD0, 0x7E, 0xD5, 0xB3
 void os_getArtEui (u1_t* buf) { memcpy_P(buf, APPEUI, 8);}
 
 // This should also be in little endian format, see above.
-static const u1_t PROGMEM DEVEUI[8] = { 0x98, 0xD0, 0x0B, 0x61, 0xAD, 0x38, 0x5A, 0x00 };
+static const u1_t PROGMEM DEVEUI[8] = { 0x92, 0x6A, 0xA0, 0xC2, 0xAF, 0x2D, 0x7D, 0x00 };
 void os_getDevEui (u1_t* buf) { memcpy_P(buf, DEVEUI, 8);}
 
 // This key should be in big endian format (or, since it is not really a
 // number but a block of memory, endianness does not really apply). In
 // practice, a key taken from the TTN console can be copied as-is.
-static const u1_t PROGMEM APPKEY[16] = { 0x01, 0x8F, 0x97, 0x44, 0x4B, 0xFA, 0x0E, 0x03, 0x38, 0xA6, 0x0C, 0xDB, 0x47, 0x1C, 0xCB, 0xCE };
+static const u1_t PROGMEM APPKEY[16] = { 0x22, 0xB0, 0x7C, 0x46, 0x58, 0xD3, 0x55, 0xD9, 0x4C, 0x57, 0x5C, 0xB0, 0x29, 0x26, 0x87, 0x4E };
 void os_getDevKey (u1_t* buf) {  memcpy_P(buf, APPKEY, 16);}
 
 // payload to send to TTN gateway
 static uint8_t payload[5];
 static osjob_t sendjob;
 
+
+
+
+
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 30;
+const unsigned TX_INTERVAL = 1;
 
-// Pin mapping for Adafruit Feather M0 LoRa
+
+
 const lmic_pinmap lmic_pins = {
-    .nss = 9,
-    .rxtx = LMIC_UNUSED_PIN,
-    .rst = 10,
-    .dio = {6, 5, LMIC_UNUSED_PIN},
-    .rxtx_rx_active = 0,
-    .rssi_cal = 8,              // LBT cal for the Adafruit Feather M0 LoRa, in dB
-    .spi_freq = 8000000,
+  .nss = 8,                // Internal connected
+  .rxtx = LMIC_UNUSED_PIN,
+  .rst = 4,                // Internal connected
+  .dio = {3, 9, LMIC_UNUSED_PIN},    // Connect "i01" to "5"
+                    // Connect "D2" to "6"
+  .rxtx_rx_active = 0,
+  .rssi_cal = 8,              // LBT cal for the Adafruit Feather M0 LoRa, in dB
+  .spi_freq = 8000000,
 };
 
+void goToSleep() {
+
+    LMIC_shutdown();
+    SPI.end();
+
+    pinMode(22, INPUT_DISCONNECTED);
+    pinMode(23, INPUT_PULLUP);
+    pinMode(24, INPUT_PULLUP);
+    
+    pinMode(4, INPUT_DISCONNECTED);
+    pinMode(8, INPUT_PULLUP);
+    pinMode(3, INPUT_DISCONNECTED);
+    pinMode(9, INPUT_DISCONNECTED);
+
+    pinMode(LED_WAN, INPUT_DISCONNECTED);
+    pinMode(LED_SENSOR, INPUT_DISCONNECTED);
+    pinMode(LED_BATT, INPUT_DISCONNECTED);
+    pinMode(RS_485_EN, INPUT_DISCONNECTED);
+
+    pinMode(RE, INPUT_DISCONNECTED);
+    pinMode(DE, INPUT_DISCONNECTED);
+        
+    
+    rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
+    rtc.standbyMode();
+    
+    pinMode(LED_WAN, OUTPUT);
+    pinMode(LED_SENSOR, OUTPUT);
+    pinMode(LED_BATT, OUTPUT);
+    
+    pinMode(RS_485_EN, OUTPUT);
+
+    digitalWrite(LED_BATT, HIGH);
+    delay(1000);
+    digitalWrite(LED_BATT, LOW);
+
+}
 
 void onEvent (ev_t ev) {
     Serial.print(os_getTime());
@@ -98,6 +147,11 @@ void onEvent (ev_t ev) {
             break;
         case EV_JOINING:
             Serial.println(F("EV_JOINING"));
+            // TTN uses SF9 for its RX2 window.
+            LMIC.dn2Dr = EU868_DR_SF9;
+            break;
+        case EV_JOIN_TXCOMPLETE:
+            Serial.println(F("EV_JOIN_TXCOMPLETE"));
             break;
         case EV_JOINED:
             Serial.println(F("EV_JOINED"));
@@ -131,14 +185,9 @@ void onEvent (ev_t ev) {
       // size, we don't use it in this example.
             LMIC_setLinkCheckMode(0);
             break;
-        /*
-        || This event is defined but not used in the code. No
-        || point in wasting codespace on it.
-        ||
-        || case EV_RFU1:
-        ||     Serial.println(F("EV_RFU1"));
-        ||     break;
-        */
+        case EV_RFU1:
+             Serial.println(F("EV_RFU1"));
+             break;
         case EV_JOIN_FAILED:
             Serial.println(F("EV_JOIN_FAILED"));
             break;
@@ -148,7 +197,8 @@ void onEvent (ev_t ev) {
             break;
         case EV_TXCOMPLETE:            
             Serial.println(F("EV_TXCOMPLETE (includes waiting for RX windows)"));
-            digitalWrite(LED_BUILTIN, LOW);
+            digitalWrite(LED_WAN, LOW);
+            
             if (LMIC.txrxFlags & TXRX_ACK)
               Serial.println(F("Received ack"));
             if (LMIC.dataLen) {
@@ -157,12 +207,9 @@ void onEvent (ev_t ev) {
               Serial.println(F(" bytes of payload"));
             }
           
-          rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
-          rtc.standbyMode();
-          
-            
-//            os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
-//            delay(30000);
+            goToSleep();
+                              
+            //os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
             do_send(&sendjob);
             break;
         case EV_LOST_TSYNC:
@@ -181,21 +228,18 @@ void onEvent (ev_t ev) {
         case EV_LINK_ALIVE:
             Serial.println(F("EV_LINK_ALIVE"));
             break;
-        /*
-        || This event is defined but not used in the code. No
-        || point in wasting codespace on it.
-        ||
-        || case EV_SCAN_FOUND:
-        ||    Serial.println(F("EV_SCAN_FOUND"));
-        ||    break;
-        */
+        case EV_SCAN_FOUND:
+            Serial.println(F("EV_SCAN_FOUND"));
+            break;
+        
         case EV_TXSTART:
             Serial.println(F("EV_TXSTART"));
-            digitalWrite(LED_BUILTIN, HIGH);
+            digitalWrite(LED_WAN, HIGH);
             break;
         default:
             Serial.print(F("Unknown event: "));
             Serial.println((unsigned) ev);
+            LMIC_reset();
             do_send(&sendjob);
             break;
     }
@@ -206,52 +250,7 @@ void do_send(osjob_t* j){
     if (LMIC.opmode & OP_TXRXPEND) {
         Serial.println(F("OP_TXRXPEND, not sending"));
     } else {
-        uint8_t result = sensor.readInputRegisters(0, 2);
-        float moisture = sensor.getResponseBuffer(0);
-        float temperature = (float)(sensor.getResponseBuffer(1))/10;
-
-        delay(100);
-        result = sensor.writeSingleRegister(4, 30);
-        Serial.print("sleep command result:");
-        Serial.println(result);
-        digitalWrite(RE, HIGH);
-        digitalWrite(DE, LOW);
-
-        Serial.print("Temperature: "); Serial.print(temperature);
-        Serial.println(" *C");
-        
-        // adjust for the f2sflt16 range (-1 to 1)
-        temperature = temperature / 100; 
-
-        // read the humidity from the DHT22
-        Serial.print("Moisture ");
-        Serial.println(moisture);
-        // adjust for the f2sflt16 range (-1 to 1)
-        moisture = moisture / 1024;
-        
-        // float -> int
-        // note: this uses the sflt16 datum (https://github.com/mcci-catena/arduino-lmic#sflt16)
-        uint16_t payloadTemp = LMIC_f2sflt16(temperature);
-        // int -> bytes
-        byte tempLow = lowByte(payloadTemp);
-        byte tempHigh = highByte(payloadTemp);
-        // place the bytes into the payload
-        payload[0] = tempLow;
-        payload[1] = tempHigh;
-
-        // float -> int
-        uint16_t payloadMoist = LMIC_f2sflt16(moisture);
-        // int -> bytes
-        byte moistLow = lowByte(payloadMoist);
-        byte moistHigh = highByte(payloadMoist);
-        payload[2] = moistLow;
-        payload[3] = moistHigh;
-
-        // prepare upstream data transmission at the next possible time.
-        // transmit on port 1 (the first parameter); you can use any value from 1 to 223 (others are reserved).
-        // don't request an ack (the last parameter, if not zero, requests an ack from the network).
-        // Remember, acks consume a lot of network resources; don't ask for an ack unless you really need it.
-        LMIC_setTxData2(1, payload, sizeof(payload)-1, 0);
+        LMIC_setTxData2(1, payload, 0, 0);
     }
     // Next TX is scheduled after TX_COMPLETE event.
 }
@@ -260,18 +259,30 @@ void do_send(osjob_t* j){
 void setup() {
     pinMode(DE, OUTPUT);//de
     pinMode(RE, OUTPUT);//~re
-    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(LED_WAN, OUTPUT);
+    pinMode(LED_SENSOR, OUTPUT);
+    pinMode(LED_BATT, OUTPUT);
     
+    pinMode(RS_485_EN, OUTPUT);
+    digitalWrite(RS_485_EN, HIGH);
+
+    digitalWrite(RE, LOW);
+    digitalWrite(DE, HIGH);
+    delay(1000);
     digitalWrite(RE, HIGH);
     digitalWrite(DE, LOW);
 
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(LED_WAN, HIGH);
+    digitalWrite(LED_SENSOR, HIGH);
+    digitalWrite(LED_BATT, HIGH);
     delay(1000);
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(LED_WAN, LOW);
+    digitalWrite(LED_SENSOR, LOW);
+    digitalWrite(LED_BATT, LOW);
     delay(1000);
         
     Serial1.begin(19200);
-    Serial.begin(9600);
+    Serial.begin(115200);
     rtc.begin();
     rtc.setEpoch(0);
     rtc.enableAlarm(rtc.MATCH_YYMMDDHHMMSS);
@@ -283,32 +294,17 @@ void setup() {
 
     Serial.println(F("Starting"));
 
-    // LMIC init.
+
     os_init();
-    digitalWrite(LED_BUILTIN, HIGH);
-    // Reset the MAC state. Session and pending data transfers will be discarded.
-    
-//    LMIC.freq = 869525000;
-    // Use a medium spread factor. This can be increased up to SF12 for
-    // better range, but then, the interval should be (significantly)
-    // raised to comply with duty cycle limits as well.
-    LMIC.datarate = DR_SF9;
-    // Maximum TX power
-    LMIC.txpow = 27;
-    LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
-    LMIC_reset();
-    // Disable link-check mode and ADR, because ADR tends to complicate testing.
-//    LMIC_setLinkCheckMode(0);
-    // Set the data rate to Spreading Factor 7.  This is the fastest supported rate for 125 kHz channels, and it
-    // minimizes air time and battery power. Set the transmission power to 14 dBi (25 mW).
-//    LMIC_setDrTxpow(DR_SF7,14);
-    // in the US, with TTN, it saves join time if we start on subband 1 (channels 8-15). This will
-    // get overridden after the join by parameters from the network. If working with other
-    // networks or in other regions, this will need to be changed.
-//    LMIC_selectSubBand(1);
+    LMIC_reset(); 
+    LMIC_setLinkCheckMode(0);
+    LMIC_setDrTxpow(EU868_DR_SF9, 14);
+
+    digitalWrite(RS_485_EN, LOW);
 
     // Start job (sending automatically starts OTAA too)
-    do_send(&sendjob);
+//    do_send(&sendjob);
+    goToSleep();
 }
 
 void loop() {
