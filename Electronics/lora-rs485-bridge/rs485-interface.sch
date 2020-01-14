@@ -18,20 +18,36 @@ Comment7 ""
 Comment8 ""
 Comment9 ""
 $EndDescr
-Text HLabel 4675 2200 2    50   Input ~ 0
-A
-Text HLabel 4675 2400 2    50   Input ~ 0
-B
 Text HLabel 3175 2900 0    50   Input ~ 0
 GND
-Text HLabel 3375 2100 0    50   Input ~ 0
-DI
-Text HLabel 3375 2200 0    50   Input ~ 0
-RO
 Text HLabel 3175 2400 0    50   Input ~ 0
 DE
 Text HLabel 2975 2500 0    50   Input ~ 0
 ~RE
+$Comp
+L Device:R R9
+U 1 1 58FEF0D0
+P 3175 2750
+F 0 "R9" V 3255 2750 50  0000 C CNN
+F 1 "10k" V 3182 2751 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3105 2750 30  0001 C CNN
+F 3 "" H 3175 2750 30  0000 C CNN
+F 4 "Generic 5% resistor" H 3175 2750 50  0001 C CNN "Comment"
+	1    3175 2750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2975 2500 3375 2500
+Text HLabel 4675 2200 2    50   Input ~ 0
+A
+Text HLabel 4675 2400 2    50   Input ~ 0
+B
+Text Label 4675 2200 2    60   ~ 0
+RS485A
+Text Label 4675 2400 2    60   ~ 0
+RS485B
+Wire Wire Line
+	4175 2400 4675 2400
 $Comp
 L Device:C C12
 U 1 1 54DF0C76
@@ -55,30 +71,21 @@ F 3 "" H 4025 1550 60  0000 C CNN
 	1    4025 1550
 	1    0    0    -1  
 $EndComp
-Text Label 4675 2200 2    60   ~ 0
-RS485A
-Text Label 4675 2400 2    60   ~ 0
-RS485B
 Wire Wire Line
 	3775 1900 3775 1700
 Wire Wire Line
 	4175 2200 4675 2200
 Wire Wire Line
-	4175 2400 4675 2400
-$Comp
-L Device:R R9
-U 1 1 58FEF0D0
-P 3175 2750
-F 0 "R9" V 3255 2750 50  0000 C CNN
-F 1 "10k" V 3182 2751 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 3105 2750 30  0001 C CNN
-F 3 "" H 3175 2750 30  0000 C CNN
-F 4 "Generic 5% resistor" H 3175 2750 50  0001 C CNN "Comment"
-	1    3175 2750
-	1    0    0    -1  
-$EndComp
+	3775 1250 4025 1250
+Text HLabel 3775 1250 0    50   Input ~ 0
+VIN
+Connection ~ 3775 1700
 Wire Wire Line
-	3175 2600 3175 2400
+	3775 1700 3775 1250
+Text HLabel 3375 2100 0    50   Input ~ 0
+DI
+Text HLabel 3375 2200 0    50   Input ~ 0
+RO
 $Comp
 L Device:R R3
 U 1 1 58FF80B2
@@ -94,15 +101,13 @@ $EndComp
 Wire Wire Line
 	2975 2000 2975 2500
 Wire Wire Line
+	3175 2600 3175 2400
+Wire Wire Line
 	3175 2900 3775 2900
 Wire Wire Line
 	3775 2900 3775 2700
 Wire Wire Line
 	3175 2400 3375 2400
-Wire Wire Line
-	3775 1250 4025 1250
-Wire Wire Line
-	2975 2500 3375 2500
 $Comp
 L miceuz:SN65HVD U1
 U 1 1 54DF0ADA
@@ -117,10 +122,16 @@ F 6 "2542747" H 3775 2300 60  0001 C CNN "Distributor"
 	1    3775 2300
 	1    0    0    -1  
 $EndComp
-Text HLabel 3775 1250 0    50   Input ~ 0
-VIN
-Text HLabel 1550 2075 0    50   Input ~ 0
-ENABLE
+Wire Wire Line
+	2975 1700 3775 1700
+Wire Wire Line
+	2150 1875 2150 1550
+Wire Wire Line
+	1600 1250 1850 1250
+Text HLabel 1600 1250 0    50   Input ~ 0
+BATT
+Wire Wire Line
+	1850 1550 2150 1550
 $Comp
 L Device:R R8
 U 1 1 5D8C5F68
@@ -134,10 +145,6 @@ F 3 "~" H 1850 1400 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1850 1250 1950 1250
-Wire Wire Line
-	2150 1875 2150 1550
-Wire Wire Line
-	1600 1250 1850 1250
 Connection ~ 1850 1250
 $Comp
 L Device:Q_PMOS_GSD Q1
@@ -156,24 +163,6 @@ F 7 "Exact as specified" H 2150 1350 50  0001 C CNN "Comment"
 $EndComp
 Text HLabel 2350 1250 2    50   Input ~ 0
 VOUT
-Text HLabel 1600 1250 0    50   Input ~ 0
-BATT
-Wire Wire Line
-	2975 1700 3775 1700
-Connection ~ 3775 1700
-Wire Wire Line
-	3775 1700 3775 1250
-$Comp
-L Device:R R10
-U 1 1 5DC0D0CD
-P 1700 2075
-F 0 "R10" V 1493 2075 50  0000 C CNN
-F 1 "150" V 1584 2075 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1630 2075 50  0001 C CNN
-F 3 "~" H 1700 2075 50  0001 C CNN
-	1    1700 2075
-	0    1    1    0   
-$EndComp
 $Comp
 L Device:Q_NMOS_GSD Q2
 U 1 1 5C9CE926
@@ -187,9 +176,20 @@ F 5 "ON SEMICONDUCTOR" H 2050 2075 50  0001 C CNN "Manufacturer"
 	1    2050 2075
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1850 1550 2150 1550
 Connection ~ 2150 1550
+Text HLabel 1550 2075 0    50   Input ~ 0
+ENABLE
+$Comp
+L Device:R R10
+U 1 1 5DC0D0CD
+P 1700 2075
+F 0 "R10" V 1493 2075 50  0000 C CNN
+F 1 "150" V 1584 2075 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1630 2075 50  0001 C CNN
+F 3 "~" H 1700 2075 50  0001 C CNN
+	1    1700 2075
+	0    1    1    0   
+$EndComp
 $Comp
 L Device:R R16
 U 1 1 5D8F7219

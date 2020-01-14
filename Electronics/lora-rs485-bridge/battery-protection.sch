@@ -20,12 +20,26 @@ Comment9 ""
 $EndDescr
 Text HLabel 1475 1800 0    50   Input ~ 0
 VIN
+Text HLabel 2175 2100 0    50   Input ~ 0
+GND
+Wire Wire Line
+	1775 1800 2175 1800
+Connection ~ 2175 1800
+$Comp
+L Device:Thermistor_PTC TH1
+U 1 1 5DC19068
+P 1625 1800
+F 0 "TH1" V 1769 1800 50  0000 C CNN
+F 1 "Thermistor_PTC" V 1769 1800 50  0001 C CNN
+F 2 "Fuse:Fuse_1206_3216Metric" H 1675 1600 50  0001 L CNN
+F 3 "~" H 1625 1800 50  0001 C CNN
+F 4 "nSMD075-13.2V" H 1625 1800 50  0001 C CNN "PartNo"
+F 5 "TECHFUSE" H 1625 1800 50  0001 C CNN "Manufacturer"
+	1    1625 1800
+	0    -1   -1   0   
+$EndComp
 Text HLabel 3725 1800 2    50   Input ~ 0
 VOUT
-Text HLabel 2400 2850 0    50   Input ~ 0
-VBUS
-Wire Wire Line
-	3500 1800 3725 1800
 $Comp
 L Device:D_Schottky D3
 U 1 1 5D86D14C
@@ -44,39 +58,7 @@ Wire Wire Line
 Wire Wire Line
 	3500 2850 3725 2850
 Wire Wire Line
-	2400 2850 2700 2850
-Text HLabel 2175 2100 0    50   Input ~ 0
-GND
-$Comp
-L Device:D_TVS D5
-U 1 1 5DC183A7
-P 2175 1950
-F 0 "D5" V 2175 2029 50  0000 L CNN
-F 1 "D_TVS" V 2220 2029 50  0001 L CNN
-F 2 "Diode_SMD:D_SOD-123F" H 2175 1950 50  0001 C CNN
-F 3 "~" H 2175 1950 50  0001 C CNN
-F 4 "SMF11A" H 2175 1950 50  0001 C CNN "PartNo"
-F 5 "Littlefuse" H 2175 1950 50  0001 C CNN "Manufacturer"
-	1    2175 1950
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	1775 1800 2175 1800
-$Comp
-L Device:Q_PMOS_GSD Q3
-U 1 1 5DC1ADD3
-P 2700 1900
-F 0 "Q3" V 2900 1900 50  0000 C CNN
-F 1 "Q_PMOS_GSD" V 2937 1900 50  0001 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 2900 2000 29  0001 C CNN
-F 3 "" H 2700 1900 60  0000 C CNN
-F 4 "NX2301P,215 " H 2700 1900 60  0001 C CNN "PartNo"
-F 5 "NXP" H 2700 1900 60  0001 C CNN "Manufacturer"
-F 6 "1894738" H 2700 1900 60  0001 C CNN "Distributor"
-F 7 "Exact as specified" H 2700 1900 50  0001 C CNN "Comment"
-	1    2700 1900
-	0    -1   -1   0   
-$EndComp
+	3500 1800 3725 1800
 $Comp
 L Device:Q_PMOS_GSD Q4
 U 1 1 5DC24989
@@ -92,6 +74,10 @@ F 7 "Exact as specified" H 3300 1900 50  0001 C CNN "Comment"
 	1    3300 1900
 	0    1    -1   0   
 $EndComp
+Wire Wire Line
+	2975 1800 3100 1800
+Wire Wire Line
+	2975 2100 3300 2100
 $Comp
 L Device:R R21
 U 1 1 5DC1D764
@@ -107,15 +93,14 @@ Wire Wire Line
 	2900 1800 2975 1800
 Connection ~ 2975 1800
 Wire Wire Line
-	2975 1800 3100 1800
-Wire Wire Line
 	2700 2100 2975 2100
 Connection ~ 2975 2100
+Text HLabel 2975 2400 0    50   Input ~ 0
+GND
+Text HLabel 2400 2850 0    50   Input ~ 0
+VBUS
 Wire Wire Line
-	2975 2100 3300 2100
-Wire Wire Line
-	2175 1800 2500 1800
-Connection ~ 2175 1800
+	2400 2850 2700 2850
 $Comp
 L Device:R R24
 U 1 1 5DC22CF0
@@ -127,25 +112,40 @@ F 3 "~" H 2975 2250 50  0001 C CNN
 	1    2975 2250
 	1    0    0    -1  
 $EndComp
-Text HLabel 2975 2400 0    50   Input ~ 0
-GND
 Wire Wire Line
 	2700 2100 2700 2850
-Connection ~ 2700 2100
 Connection ~ 2700 2850
 Wire Wire Line
 	2700 2850 3200 2850
 $Comp
-L Device:Thermistor_PTC TH1
-U 1 1 5DC19068
-P 1625 1800
-F 0 "TH1" V 1769 1800 50  0000 C CNN
-F 1 "Thermistor_PTC" V 1769 1800 50  0001 C CNN
-F 2 "Fuse:Fuse_1206_3216Metric" H 1675 1600 50  0001 L CNN
-F 3 "~" H 1625 1800 50  0001 C CNN
-F 4 "nSMD075-13.2V" H 1625 1800 50  0001 C CNN "PartNo"
-F 5 "TECHFUSE" H 1625 1800 50  0001 C CNN "Manufacturer"
-	1    1625 1800
+L Device:D_TVS D5
+U 1 1 5DC183A7
+P 2175 1950
+F 0 "D5" V 2175 2029 50  0000 L CNN
+F 1 "D_TVS" V 2220 2029 50  0001 L CNN
+F 2 "Diode_SMD:D_SOD-123F" H 2175 1950 50  0001 C CNN
+F 3 "~" H 2175 1950 50  0001 C CNN
+F 4 "SMF11A" H 2175 1950 50  0001 C CNN "PartNo"
+F 5 "Littlefuse" H 2175 1950 50  0001 C CNN "Manufacturer"
+	1    2175 1950
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:Q_PMOS_GSD Q3
+U 1 1 5DC1ADD3
+P 2700 1900
+F 0 "Q3" V 2900 1900 50  0000 C CNN
+F 1 "Q_PMOS_GSD" V 2937 1900 50  0001 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 2900 2000 29  0001 C CNN
+F 3 "" H 2700 1900 60  0000 C CNN
+F 4 "NX2301P,215 " H 2700 1900 60  0001 C CNN "PartNo"
+F 5 "NXP" H 2700 1900 60  0001 C CNN "Manufacturer"
+F 6 "1894738" H 2700 1900 60  0001 C CNN "Distributor"
+F 7 "Exact as specified" H 2700 1900 50  0001 C CNN "Comment"
+	1    2700 1900
 	0    -1   -1   0   
 $EndComp
+Wire Wire Line
+	2175 1800 2500 1800
+Connection ~ 2700 2100
 $EndSCHEMATC
