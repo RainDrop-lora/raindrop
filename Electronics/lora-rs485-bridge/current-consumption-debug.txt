@@ -1,0 +1,133 @@
+
+# V1.0 board is analysed
+
+Both MCU and RFM95 are in sleep.
+
+VCC - 6V
+
+Overall current consumption stays at 305uA
+
+* RFM95 VCC pin draws 0.5uA 
+* RFM95 GND current is 0.5uA
+
+RFM95 removed from board, RS485 transceiver removed
+Board cleaned
+
+pin level is set to default sleep value before setting it as input -- this seems to have impact
+
+Overall current consumption is 9uA
+
+RS485 transceiver put back
+
+Overall current consumption is 12uA
+
+Code changed to enable RS485 transceiver at the startup
+
+RFM95 soldered back with resistors:
+ * DIO01 - 10k
+ * IRQ - 10k
+ * MISO - 10k
+ * MOSI - 330
+ * SCK - 330
+ * NSS - 330
+ * RST - 10k
+
+RFM95 is not initialized in FW
+
+Overall current consumption is 2mA
+
+RFM95 initialization put back to FW
+
+Overall current consumption is 10mA, MCU does not finish initializing RFM95
+
+MISO resistor replaced to 220
+
+Initialization passes. Current consumption is about 38uA
+Touching MISO line at RFM95 size reduces current consumption down to 12uA
+Rising the board from antistatic pad also reduces current consumption down to 10-12uA. 
+Holding hand over board increases current consumption.
+
+MISO resistor replaced with a link
+
+Overall current consumption is 10uA
+Board is on longer susceptable to hand movement or placement on antistatic pad
+
+RST resistor replaced with a link
+
+NO change - Overall current consumption is 10uA
+
+DIO01 resistor replaced with a link
+
+NO change - Overall current consumption is 10uA
+
+IRQ resistor replaced with a link
+
+NO change - Overall current consumption is 10uA
+
+MOSI resistor replaced with a link
+
+NO change - Overall current consumption is 10uA
+
+SCK resistor replaced with a link
+
+NO change - Overall current consumption is 10uA
+
+NSS resistor replaced with a link
+
+NO change - Overall current consumption is 10uA
+
+* Conclusions: V1.0 board stays in 10uA sleep current with RFM95 connected with no resistors
+
+# V1.1 board is analysed
+
+VCC = 6V
+all RFM95 pins are connected via 1k resistor
+
+Overall sleep current is 60uA
+
+Board cleaned with Isopropyl alcohol
+
+Overall sleep current increased to over 100uA, a lot of 50Hz noise visible on current signal
+
+Board cleaned with Isopropyl alcohol even more, MISO resistor replaced with 0 Ohm link
+
+Overall sleep current dropped to 65uA
+
+MOSI and SCK resistors replaced with 0 Ohm - no improvement
+
+RFM95 removed - on improvement, current stays at ~74uA
+
+R24 desoldered - current dropped to 9uA; D3 is a leaky Schottky!!!
+
+D3 replaced with 1n4148 - current is 15uA which is nominal.
+
+RFM95 soldered back
+
+Overall sleep current is 15uA!!!
+
+ALL resistors removed from RFM95 lines, sleep current is still 15uA
+
+#FW changes
+
+pins left as outputs with default sleep high/low states
+
+Overall sleep current is 15uA
+
+Add a 1M pulldown to MISO line - a slight improvement in current consumption - down to 14.5uA, no sensitivity to touching anymore.
+
+# Active mode current consumption
+
+* SF7 -  38mC per message
+* SF8 -  43mC
+* SF9 -  58mC
+* SF10 - 68mC
+* SF11 - 119mC
+* SF12 - 182mC
+
+
+
+
+
+
+
+
