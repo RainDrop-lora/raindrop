@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 5
+Sheet 4 5
 Title ""
 Date ""
 Rev ""
@@ -29,7 +29,7 @@ L Device:R R9
 U 1 1 58FEF0D0
 P 3175 2750
 F 0 "R9" V 3255 2750 50  0000 C CNN
-F 1 "10k" V 3182 2751 50  0000 C CNN
+F 1 "1M" V 3182 2751 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 3105 2750 30  0001 C CNN
 F 3 "" H 3175 2750 30  0000 C CNN
 F 4 "Generic 5% resistor" H 3175 2750 50  0001 C CNN "Comment"
@@ -91,7 +91,7 @@ L Device:R R3
 U 1 1 58FF80B2
 P 2975 1850
 F 0 "R3" V 3055 1850 50  0000 C CNN
-F 1 "10k" V 2982 1851 50  0000 C CNN
+F 1 "1M" V 2982 1851 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 2905 1850 30  0001 C CNN
 F 3 "" H 2975 1850 30  0000 C CNN
 F 4 "Generic 5% resistor" H 2975 1850 50  0001 C CNN "Comment"
@@ -125,11 +125,14 @@ $EndComp
 Wire Wire Line
 	2975 1700 3775 1700
 Wire Wire Line
-	2150 1875 2150 1550
-Wire Wire Line
 	1600 1250 1850 1250
 Text HLabel 1600 1250 0    50   Input ~ 0
 BATT
+Wire Wire Line
+	1850 1250 1950 1250
+Connection ~ 1850 1250
+Wire Wire Line
+	2150 1875 2150 1550
 Wire Wire Line
 	1850 1550 2150 1550
 $Comp
@@ -143,9 +146,6 @@ F 3 "~" H 1850 1400 50  0001 C CNN
 	1    1850 1400
 	1    0    0    1   
 $EndComp
-Wire Wire Line
-	1850 1250 1950 1250
-Connection ~ 1850 1250
 $Comp
 L Device:Q_PMOS_GSD Q1
 U 1 1 5D8C5F67
