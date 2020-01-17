@@ -1,8 +1,9 @@
-#LoRa - RS485 bridge
+# LoRa - RS485 bridge
 
 This is a board that is specifically designed to easily hook up RS485 and I2C sensors to LoRaWAN network.
+![](lora-rs485-bridge.png)
 
-##Features
+## Features
 
 * Arduino compatible (Adafruit Feather M0 based)
 * Low power:
