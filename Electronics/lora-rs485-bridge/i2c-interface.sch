@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 5
+Sheet 5 5
 Title ""
 Date ""
 Rev ""
@@ -44,7 +44,6 @@ Text HLabel 4150 2200 0    50   Input ~ 0
 VIN
 Wire Wire Line
 	4150 2200 4400 2200
-Connection ~ 4400 2200
 $Comp
 L Device:R R4
 U 1 1 5D8521B9
@@ -56,6 +55,7 @@ F 3 "~" H 4400 2350 50  0001 C CNN
 	1    4400 2350
 	1    0    0    1   
 $EndComp
+Connection ~ 4400 2200
 $Comp
 L Device:Q_PMOS_GSD Q7
 U 1 1 57FC85CD
