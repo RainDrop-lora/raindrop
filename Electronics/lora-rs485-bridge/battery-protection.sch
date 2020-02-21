@@ -24,80 +24,7 @@ Text HLabel 2175 2100 0    50   Input ~ 0
 GND
 Wire Wire Line
 	1775 1800 2175 1800
-$Comp
-L Device:Thermistor_PTC TH1
-U 1 1 5DC19068
-P 1625 1800
-F 0 "TH1" V 1769 1800 50  0000 C CNN
-F 1 "Thermistor_PTC" V 1769 1800 50  0001 C CNN
-F 2 "Fuse:Fuse_1206_3216Metric" H 1675 1600 50  0001 L CNN
-F 3 "~" H 1625 1800 50  0001 C CNN
-F 4 "nSMD075-13.2V" H 1625 1800 50  0001 C CNN "PartNo"
-F 5 "TECHFUSE" H 1625 1800 50  0001 C CNN "Manufacturer"
-	1    1625 1800
-	0    -1   -1   0   
-$EndComp
 Connection ~ 2175 1800
-$Comp
-L Device:Q_PMOS_GSD Q3
-U 1 1 5DC1ADD3
-P 2700 1900
-F 0 "Q3" V 2900 1900 50  0000 C CNN
-F 1 "Q_PMOS_GSD" V 2937 1900 50  0001 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 2900 2000 29  0001 C CNN
-F 3 "" H 2700 1900 60  0000 C CNN
-F 4 "NX2301P,215 " H 2700 1900 60  0001 C CNN "PartNo"
-F 5 "NXP" H 2700 1900 60  0001 C CNN "Manufacturer"
-F 6 "1894738" H 2700 1900 60  0001 C CNN "Distributor"
-F 7 "Exact as specified" H 2700 1900 50  0001 C CNN "Comment"
-	1    2700 1900
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	2700 2100 2950 2100
-Connection ~ 2700 2100
-Wire Wire Line
-	2900 1800 2950 1800
-Connection ~ 2950 1800
-$Comp
-L Device:D_Zener D2
-U 1 1 5E21FE6A
-P 2950 1950
-F 0 "D2" V 2905 2030 50  0000 L CNN
-F 1 "7.6V" V 2995 2030 50  0000 L CNN
-F 2 "Diode_SMD:D_SOD-323" H 2950 1950 50  0001 C CNN
-F 3 "~" H 2950 1950 50  0001 C CNN
-F 4 "MM3Z7V5ST1G" H 2950 1950 50  0001 C CNN "PartNo"
-F 5 "ON SEMI" H 2950 1950 50  0001 C CNN "Manufacturer"
-	1    2950 1950
-	0    1    1    0   
-$EndComp
-Connection ~ 2950 2100
-Wire Wire Line
-	4000 1800 4000 2850
-$Comp
-L Device:D D3
-U 1 1 5D86D14C
-P 3625 2850
-F 0 "D3" H 3625 2634 50  0000 C CNN
-F 1 "1N4148" H 3625 2725 50  0000 C CNN
-F 2 "Diode_SMD:D_SOD-123" H 3625 2850 50  0001 C CNN
-F 3 "~" H 3625 2850 50  0001 C CNN
-F 4 "Diodes Inc" H 3625 2850 50  0001 C CNN "Manufacturer"
-F 5 "1N4148W-7-F" H 3625 2850 50  0001 C CNN "PartNo"
-	1    3625 2850
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3775 2850 4000 2850
-Wire Wire Line
-	3250 2100 3575 2100
-Text HLabel 4000 1800 2    50   Input ~ 0
-VOUT
-Wire Wire Line
-	3250 1800 3375 1800
-Wire Wire Line
-	3775 1800 4000 1800
 Wire Wire Line
 	2175 1800 2500 1800
 $Comp
@@ -113,13 +40,74 @@ F 5 "Littlefuse" H 2175 1950 50  0001 C CNN "Manufacturer"
 	1    2175 1950
 	0    1    1    0   
 $EndComp
-Text HLabel 2400 2850 0    50   Input ~ 0
-VBUS
-Connection ~ 2700 2850
+$Comp
+L Device:Thermistor_PTC TH1
+U 1 1 5DC19068
+P 1625 1800
+F 0 "TH1" V 1769 1800 50  0000 C CNN
+F 1 "Thermistor_PTC" V 1769 1800 50  0001 C CNN
+F 2 "Fuse:Fuse_1206_3216Metric" H 1675 1600 50  0001 L CNN
+F 3 "~" H 1625 1800 50  0001 C CNN
+F 4 "nSMD075-13.2V" H 1625 1800 50  0001 C CNN "PartNo"
+F 5 "TECHFUSE" H 1625 1800 50  0001 C CNN "Manufacturer"
+	1    1625 1800
+	0    -1   -1   0   
+$EndComp
+Text HLabel 4000 1800 2    50   Input ~ 0
+VOUT
 Wire Wire Line
-	2400 2850 2700 2850
+	3250 1800 3375 1800
 Wire Wire Line
-	2700 2100 2700 2850
+	3775 1800 4000 1800
+Wire Wire Line
+	3775 2850 4000 2850
+Wire Wire Line
+	4000 1800 4000 2850
+Wire Wire Line
+	3250 2100 3575 2100
+$Comp
+L Device:D D3
+U 1 1 5D86D14C
+P 3625 2850
+F 0 "D3" H 3625 2634 50  0000 C CNN
+F 1 "1N4148" H 3625 2725 50  0000 C CNN
+F 2 "Diode_SMD:D_SOD-123" H 3625 2850 50  0001 C CNN
+F 3 "~" H 3625 2850 50  0001 C CNN
+F 4 "Diodes Inc" H 3625 2850 50  0001 C CNN "Manufacturer"
+F 5 "1N4148W-7-F" H 3625 2850 50  0001 C CNN "PartNo"
+	1    3625 2850
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R24
+U 1 1 5DC22CF0
+P 3250 2250
+F 0 "R24" H 3320 2296 50  0000 L CNN
+F 1 "1M" H 3320 2205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3180 2250 50  0001 C CNN
+F 3 "~" H 3250 2250 50  0001 C CNN
+	1    3250 2250
+	1    0    0    -1  
+$EndComp
+Connection ~ 3250 1800
+Wire Wire Line
+	2950 1800 3250 1800
+Connection ~ 3250 2100
+Wire Wire Line
+	2950 2100 3250 2100
+$Comp
+L Device:D_Zener D2
+U 1 1 5E21FE6A
+P 2950 1950
+F 0 "D2" V 2905 2030 50  0000 L CNN
+F 1 "7.6V" V 2995 2030 50  0000 L CNN
+F 2 "Diode_SMD:D_SOD-323" H 2950 1950 50  0001 C CNN
+F 3 "~" H 2950 1950 50  0001 C CNN
+F 4 "MM3Z7V5ST1G" H 2950 1950 50  0001 C CNN "PartNo"
+F 5 "ON SEMI" H 2950 1950 50  0001 C CNN "Manufacturer"
+	1    2950 1950
+	0    1    1    0   
+$EndComp
 $Comp
 L Device:Q_PMOS_GSD Q4
 U 1 1 5DC24989
@@ -135,10 +123,6 @@ F 7 "Exact as specified" H 3575 1900 50  0001 C CNN "Comment"
 	1    3575 1900
 	0    1    -1   0   
 $EndComp
-Connection ~ 3250 1800
-Connection ~ 3250 2100
-Wire Wire Line
-	2950 1800 3250 1800
 $Comp
 L Device:R R21
 U 1 1 5DC1D764
@@ -151,20 +135,36 @@ F 3 "~" H 3250 1950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2950 2100 3250 2100
+	2700 2100 2950 2100
+Connection ~ 2700 2100
+Text HLabel 2400 2850 0    50   Input ~ 0
+VBUS
+Connection ~ 2700 2850
+Wire Wire Line
+	2400 2850 2700 2850
+Wire Wire Line
+	2700 2100 2700 2850
 Wire Wire Line
 	2700 2850 3475 2850
 Text HLabel 3250 2400 0    50   Input ~ 0
 GND
+Connection ~ 2950 1800
+Connection ~ 2950 2100
+Wire Wire Line
+	2900 1800 2950 1800
 $Comp
-L Device:R R24
-U 1 1 5DC22CF0
-P 3250 2250
-F 0 "R24" H 3320 2296 50  0000 L CNN
-F 1 "1M" H 3320 2205 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 3180 2250 50  0001 C CNN
-F 3 "~" H 3250 2250 50  0001 C CNN
-	1    3250 2250
-	1    0    0    -1  
+L Device:Q_PMOS_GSD Q3
+U 1 1 5DC1ADD3
+P 2700 1900
+F 0 "Q3" V 2900 1900 50  0000 C CNN
+F 1 "Q_PMOS_GSD" V 2937 1900 50  0001 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 2900 2000 29  0001 C CNN
+F 3 "" H 2700 1900 60  0000 C CNN
+F 4 "NX2301P,215 " H 2700 1900 60  0001 C CNN "PartNo"
+F 5 "NXP" H 2700 1900 60  0001 C CNN "Manufacturer"
+F 6 "1894738" H 2700 1900 60  0001 C CNN "Distributor"
+F 7 "Exact as specified" H 2700 1900 50  0001 C CNN "Comment"
+	1    2700 1900
+	0    -1   -1   0   
 $EndComp
 $EndSCHEMATC

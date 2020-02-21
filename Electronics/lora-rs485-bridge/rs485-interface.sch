@@ -24,6 +24,8 @@ Text HLabel 3175 2400 0    50   Input ~ 0
 DE
 Text HLabel 2975 2500 0    50   Input ~ 0
 ~RE
+Wire Wire Line
+	2975 2500 3375 2500
 $Comp
 L Device:R R9
 U 1 1 58FEF0D0
@@ -36,8 +38,6 @@ F 4 "Generic 5% resistor" H 3175 2750 50  0001 C CNN "Comment"
 	1    3175 2750
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2975 2500 3375 2500
 Text HLabel 4675 2200 2    50   Input ~ 0
 A
 Text HLabel 4675 2400 2    50   Input ~ 0
@@ -48,6 +48,17 @@ Text Label 4675 2400 2    60   ~ 0
 RS485B
 Wire Wire Line
 	4175 2400 4675 2400
+Wire Wire Line
+	3775 1700 3775 1250
+Connection ~ 3775 1700
+Wire Wire Line
+	3775 1900 3775 1700
+Wire Wire Line
+	4175 2200 4675 2200
+Wire Wire Line
+	3775 1250 4025 1250
+Text HLabel 3775 1250 0    50   Input ~ 0
+VIN
 $Comp
 L Device:C C12
 U 1 1 54DF0C76
@@ -71,35 +82,39 @@ F 3 "" H 4025 1550 60  0000 C CNN
 	1    4025 1550
 	1    0    0    -1  
 $EndComp
+Text HLabel 1550 2075 0    50   Input ~ 0
+ENABLE
 Wire Wire Line
-	3775 1900 3775 1700
+	1550 2375 2150 2375
 Wire Wire Line
-	4175 2200 4675 2200
+	2150 2375 2150 2525
+Text HLabel 2150 2525 0    50   Input ~ 0
+GND
 Wire Wire Line
-	3775 1250 4025 1250
-Text HLabel 3775 1250 0    50   Input ~ 0
-VIN
-Connection ~ 3775 1700
-Wire Wire Line
-	3775 1700 3775 1250
-Text HLabel 3375 2100 0    50   Input ~ 0
-DI
-Text HLabel 3375 2200 0    50   Input ~ 0
-RO
+	2150 2275 2150 2375
+Connection ~ 2150 2375
 $Comp
-L Device:R R3
-U 1 1 58FF80B2
-P 2975 1850
-F 0 "R3" V 3055 1850 50  0000 C CNN
-F 1 "1M" V 2982 1851 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 2905 1850 30  0001 C CNN
-F 3 "" H 2975 1850 30  0000 C CNN
-F 4 "Generic 5% resistor" H 2975 1850 50  0001 C CNN "Comment"
-	1    2975 1850
+L Device:R R10
+U 1 1 5DC0D0CD
+P 1700 2075
+F 0 "R10" V 1493 2075 50  0000 C CNN
+F 1 "150" V 1584 2075 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1630 2075 50  0001 C CNN
+F 3 "~" H 1700 2075 50  0001 C CNN
+	1    1700 2075
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R16
+U 1 1 5D8F7219
+P 1550 2225
+F 0 "R16" H 1481 2179 50  0000 R CNN
+F 1 "1M" H 1481 2270 50  0000 R CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1480 2225 50  0001 C CNN
+F 3 "~" H 1550 2225 50  0001 C CNN
+	1    1550 2225
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2975 2000 2975 2500
 Wire Wire Line
 	3175 2600 3175 2400
 Wire Wire Line
@@ -123,29 +138,12 @@ F 6 "2542747" H 3775 2300 60  0001 C CNN "Distributor"
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2975 1700 3775 1700
-Wire Wire Line
 	1600 1250 1850 1250
 Text HLabel 1600 1250 0    50   Input ~ 0
 BATT
 Wire Wire Line
 	1850 1250 1950 1250
 Connection ~ 1850 1250
-Wire Wire Line
-	2150 1875 2150 1550
-Wire Wire Line
-	1850 1550 2150 1550
-$Comp
-L Device:R R8
-U 1 1 5D8C5F68
-P 1850 1400
-F 0 "R8" H 1781 1354 50  0000 R CNN
-F 1 "1M" H 1781 1445 50  0000 R CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1780 1400 50  0001 C CNN
-F 3 "~" H 1850 1400 50  0001 C CNN
-	1    1850 1400
-	1    0    0    1   
-$EndComp
 $Comp
 L Device:Q_PMOS_GSD Q1
 U 1 1 5D8C5F67
@@ -161,6 +159,22 @@ F 7 "Exact as specified" H 2150 1350 50  0001 C CNN "Comment"
 	1    2150 1350
 	0    1    -1   0   
 $EndComp
+$Comp
+L Device:R R8
+U 1 1 5D8C5F68
+P 1850 1400
+F 0 "R8" H 1781 1354 50  0000 R CNN
+F 1 "1M" H 1781 1445 50  0000 R CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1780 1400 50  0001 C CNN
+F 3 "~" H 1850 1400 50  0001 C CNN
+	1    1850 1400
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	2150 1875 2150 1550
+Wire Wire Line
+	1850 1550 2150 1550
+Connection ~ 2150 1550
 Text HLabel 2350 1250 2    50   Input ~ 0
 VOUT
 $Comp
@@ -176,38 +190,24 @@ F 5 "ON SEMICONDUCTOR" H 2050 2075 50  0001 C CNN "Manufacturer"
 	1    2050 2075
 	1    0    0    -1  
 $EndComp
-Connection ~ 2150 1550
-Text HLabel 1550 2075 0    50   Input ~ 0
-ENABLE
+Wire Wire Line
+	2975 2000 2975 2500
+Wire Wire Line
+	2975 1700 3775 1700
+Text HLabel 3375 2100 0    50   Input ~ 0
+DI
+Text HLabel 3375 2200 0    50   Input ~ 0
+RO
 $Comp
-L Device:R R10
-U 1 1 5DC0D0CD
-P 1700 2075
-F 0 "R10" V 1493 2075 50  0000 C CNN
-F 1 "150" V 1584 2075 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1630 2075 50  0001 C CNN
-F 3 "~" H 1700 2075 50  0001 C CNN
-	1    1700 2075
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R16
-U 1 1 5D8F7219
-P 1550 2225
-F 0 "R16" H 1481 2179 50  0000 R CNN
-F 1 "1M" H 1481 2270 50  0000 R CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1480 2225 50  0001 C CNN
-F 3 "~" H 1550 2225 50  0001 C CNN
-	1    1550 2225
+L Device:R R3
+U 1 1 58FF80B2
+P 2975 1850
+F 0 "R3" V 3055 1850 50  0000 C CNN
+F 1 "1M" V 2982 1851 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2905 1850 30  0001 C CNN
+F 3 "" H 2975 1850 30  0000 C CNN
+F 4 "Generic 5% resistor" H 2975 1850 50  0001 C CNN "Comment"
+	1    2975 1850
 	1    0    0    -1  
 $EndComp
-Text HLabel 2150 2525 0    50   Input ~ 0
-GND
-Wire Wire Line
-	2150 2275 2150 2375
-Connection ~ 2150 2375
-Wire Wire Line
-	2150 2375 2150 2525
-Wire Wire Line
-	1550 2375 2150 2375
 $EndSCHEMATC

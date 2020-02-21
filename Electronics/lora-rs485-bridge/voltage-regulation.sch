@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 5
+Sheet 4 5
 Title ""
 Date ""
 Rev ""
@@ -20,6 +20,11 @@ Comment9 ""
 $EndDescr
 Text HLabel 3275 1575 0    50   Input ~ 0
 VIN
+Wire Wire Line
+	3675 1575 3925 1575
+Wire Wire Line
+	3275 1575 3675 1575
+Connection ~ 3675 1575
 $Comp
 L Device:C C7
 U 1 1 5BD77A45
@@ -39,6 +44,10 @@ Wire Wire Line
 	3275 2175 3675 2175
 Wire Wire Line
 	3675 1875 3675 2175
+Text HLabel 3675 2175 3    50   Input ~ 0
+GND
+Wire Wire Line
+	3925 1875 3925 1575
 $Comp
 L Device:C C16
 U 1 1 5D00435E
@@ -52,25 +61,7 @@ F 5 "TDK" H 3275 1725 50  0001 C CNN "Manufacturer"
 	1    3275 1725
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3275 1575 3675 1575
-Connection ~ 3675 1575
-Wire Wire Line
-	3925 1875 3925 1575
-Wire Wire Line
-	3675 1575 3925 1575
-Text HLabel 3675 2175 3    50   Input ~ 0
-GND
-Wire Wire Line
-	4625 2500 3675 2500
-Wire Wire Line
-	3675 2500 3675 2175
 Connection ~ 3675 2175
-Connection ~ 4625 2500
-Wire Wire Line
-	5275 1575 5450 1575
-Wire Wire Line
-	5450 1875 5450 1575
 Text HLabel 5450 1575 2    50   Input ~ 0
 VOUT
 $Comp
@@ -86,6 +77,11 @@ F 5 "TDK" H 5450 2025 50  0001 C CNN "Manufacturer"
 	1    5450 2025
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	5275 1575 5450 1575
+Wire Wire Line
+	5450 1875 5450 1575
+Connection ~ 3925 1575
 $Comp
 L miceuz:NCP718 U4
 U 1 1 5D8F1C6A
@@ -100,9 +96,8 @@ F 5 "ON SEMICONDUCTOR" H 4625 1725 50  0001 C CNN "Manufacturer"
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4625 2175 4625 2500
+	3675 2175 4625 2175
+Connection ~ 4625 2175
 Wire Wire Line
-	4625 2500 5450 2500
-Wire Wire Line
-	5450 2500 5450 2175
+	4625 2175 5450 2175
 $EndSCHEMATC
