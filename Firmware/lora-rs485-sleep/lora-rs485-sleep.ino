@@ -16,6 +16,8 @@
  * including, but not limited to, copying, modification and redistribution.
  * NO WARRANTY OF ANY KIND IS PROVIDED.
  *******************************************************************************/
+#define CRYSTALLESS 1
+
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
@@ -32,6 +34,7 @@ ModbusMaster sensor;
 #define LED_SENSOR 17
 #define LED_BATT 16
 #define RS_485_EN 2
+#define I2C_EN 5
 
 
 RTCZero rtc;
@@ -76,7 +79,7 @@ static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 1;
+const unsigned TX_INTERVAL = 10;
 
 
 
@@ -91,42 +94,32 @@ const lmic_pinmap lmic_pins = {
   .spi_freq = 8000000,
 };
 
+
+#define RFM_NSS     8
+#define RFM_RST     4
+#define RFM_IRQ     3
+#define RFM_DIO01   9
+
 void goToSleep() {
-
-    LMIC_shutdown();
-    SPI.end();
-
-    pinMode(22, INPUT_DISCONNECTED);
-    pinMode(23, INPUT_PULLUP);
-    pinMode(24, INPUT_PULLUP);
-    
-    pinMode(4, INPUT_DISCONNECTED);
-    pinMode(8, INPUT_PULLUP);
-    pinMode(3, INPUT_DISCONNECTED);
-    pinMode(9, INPUT_DISCONNECTED);
-
-    pinMode(LED_WAN, INPUT_DISCONNECTED);
-    pinMode(LED_SENSOR, INPUT_DISCONNECTED);
-    pinMode(LED_BATT, INPUT_DISCONNECTED);
-    pinMode(RS_485_EN, INPUT_DISCONNECTED);
-
-    pinMode(RE, INPUT_DISCONNECTED);
-    pinMode(DE, INPUT_DISCONNECTED);
-        
-    
-    rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
-    rtc.standbyMode();
-    
-    pinMode(LED_WAN, OUTPUT);
-    pinMode(LED_SENSOR, OUTPUT);
-    pinMode(LED_BATT, OUTPUT);
-    
-    pinMode(RS_485_EN, OUTPUT);
-
-    digitalWrite(LED_BATT, HIGH);
-    delay(1000);
+    digitalWrite(LED_WAN, LOW);
+    digitalWrite(LED_SENSOR, LOW);
     digitalWrite(LED_BATT, LOW);
+    
+    digitalWrite(RS_485_EN, LOW);
+    digitalWrite(I2C_EN, HIGH);
 
+    digitalWrite(RE, HIGH);
+    digitalWrite(DE, LOW);
+
+    rtc.begin();
+    rtc.setEpoch(0);
+    rtc.enableAlarm(rtc.MATCH_YYMMDDHHMMSS);
+    rtc.attachInterrupt(alarmMatch);
+
+    rtc.setAlarmEpoch(rtc.getEpoch() + TX_INTERVAL);
+    SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+    rtc.standbyMode();
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 }
 
 void onEvent (ev_t ev) {
@@ -259,18 +252,18 @@ void do_send(osjob_t* j){
 void setup() {
     pinMode(DE, OUTPUT);//de
     pinMode(RE, OUTPUT);//~re
+    digitalWrite(RE, HIGH);
+    digitalWrite(DE, LOW);
+
     pinMode(LED_WAN, OUTPUT);
     pinMode(LED_SENSOR, OUTPUT);
     pinMode(LED_BATT, OUTPUT);
     
     pinMode(RS_485_EN, OUTPUT);
-    digitalWrite(RS_485_EN, HIGH);
+    digitalWrite(RS_485_EN, LOW);
 
-    digitalWrite(RE, LOW);
-    digitalWrite(DE, HIGH);
-    delay(1000);
-    digitalWrite(RE, HIGH);
-    digitalWrite(DE, LOW);
+    pinMode(I2C_EN, OUTPUT);
+    digitalWrite(I2C_EN, HIGH);
 
     digitalWrite(LED_WAN, HIGH);
     digitalWrite(LED_SENSOR, HIGH);
@@ -279,39 +272,33 @@ void setup() {
     digitalWrite(LED_WAN, LOW);
     digitalWrite(LED_SENSOR, LOW);
     digitalWrite(LED_BATT, LOW);
-    delay(1000);
         
-    Serial1.begin(19200);
     Serial.begin(115200);
-    rtc.begin();
-    rtc.setEpoch(0);
-    rtc.enableAlarm(rtc.MATCH_YYMMDDHHMMSS);
-    rtc.attachInterrupt(alarmMatch);
-    
-    sensor.begin(1, Serial1);
-    sensor.preTransmission(preTransmission);
-    sensor.postTransmission(postTransmission);
-
     Serial.println(F("Starting"));
+    
+    //TODO setup only for time of usage, costs ~1mA!
+//    Serial5.begin(19200);
+//    sensor.begin(1, Serial5);
+//    sensor.preTransmission(preTransmission);
+//    sensor.postTransmission(postTransmission);
 
-
+    digitalWrite(LED_WAN, HIGH);
     os_init();
     LMIC_reset(); 
     LMIC_setLinkCheckMode(0);
     LMIC_setDrTxpow(EU868_DR_SF9, 14);
 
-    digitalWrite(RS_485_EN, LOW);
+    delay(100);
+    digitalWrite(LED_WAN, LOW);
+
 
     // Start job (sending automatically starts OTAA too)
 //    do_send(&sendjob);
-    goToSleep();
 }
 
 void loop() {
-  // we call the LMIC's runloop processor. This will cause things to happen based on events and time. One
-  // of the things that will happen is callbacks for transmission complete or received messages. We also
-  // use this loop to queue periodic data transmissions.  You can put other things here in the `loop()` routine,
-  // but beware that LoRaWAN timing is pretty tight, so if you do more than a few milliseconds of work, you
-  // will want to call `os_runloop_once()` every so often, to keep the radio running.
-  os_runloop_once();
+    delay(10000);
+    goToSleep();
+  //os_runloop_once();
+  
 }
