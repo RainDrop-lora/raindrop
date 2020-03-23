@@ -15,6 +15,20 @@ This is a board that is specifically designed to easily hook up RS485 and I2C se
 * Wide input voltage range (up to 12V)
 * Footprint for edge SMA antenna connector 
 
+## Hardware resources
+
+ * Connector J1 is power input, 12V max
+ * Connector J4 is RS485 interface. VOUT on this connector is connected directly to the positive power input. Current of up to 500mA can be supplied from this connector. Q2 and Q1 form a high side switch to switch power to the connected RS485 bus. Digital pin **2** in Arduino environment can be used to switch power on and off.
+ * Connector J3 is I2C interface. +3V3 on this connector is connected to the onboard +3V3 regulator. Up to 100mA can be supplied from this connector. R6 and R7 are I2C pullup resistors with the value of 4.7Ohm. Q7 is a switch that controls power to this connector. Digital pin **5** in Arduino environment can be used to controll this switch. Control logic is inverted, i.e. writing pin 5 HIGH will disconnect power to J3 and pullups, writing pin 5 LOW, will connect +3V3 to J3 and pullups.
+ * SWD connector is provided for debugging and low level programming. 6-pin [Tag-Connect](https://www.tag-connect.com/product-category/products/cables/6-pin-target) connector can be used
+ * Battery level is measured thru resistors R11, R12. Battery voltage is provided to this resistive divider when power to RS485 port is enabled. Voltage proportional to battery voltage is provided on analog pin **A0**. If using power supplies higher than 9V adjust values of resistors R11, R12 accordingly.
+ * Led WAN is connected to digital pin **18**
+ * Led SENS is connected to digital pin **17**
+ * Led BATT is connected to digital pin **16**
+ * Button TEST is connected to pin **A1**
+ * Button RESET is connected to RESET line of the microcontroller U2.
+
+
 ## Power
 
 The board is designed to be used with 4xAA 1.5V cells, actually physical dimensions of the board resemble a common cheap 4xAA holder. This strategy was chosen because for low power device it makes little sense to use recheargable batteries as you probably will not want to bring back device from field to charge it, it's much more practical to just change the batteries. 4xAA configuration allows to use up full capacity of AA cell - typically AA cells are totally flat at 0.8V, thus the circuit will stay fully operational till the batteries are flat - 0.8x4=3.2V while microcontroller works down to 2.5V and RFM69 module works down to 1.8V. 
